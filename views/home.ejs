@@ -1,0 +1,28 @@
+<%- include("header") -%>
+    <div class="box" id="heading">
+        <% if (title === "Saturday" || title === "Sunday"){ %>
+            <h1 style="color:purple;"><%= title %> List</h1>
+        <% }else{ %>
+            <h1 style="color: blue;"><%= title %> List</h1>
+        <% } %>
+    </div>
+    <div class="box">
+            <% if (items) { %>
+                
+                <% for (let i = 0; i < items.items.length; i++) { %>
+                <form action="/delete" method="post">
+                    <input name="screenID" value="<%= title%>" class="hidden">
+                    <div class="item">
+                        <input type="checkbox" name="checkbox" value="<%=items.items[i]._id%>" onChange="this.form.submit()">
+                        <p><%= items.items[i].content %></p>
+                    </div>
+                </form>
+                <% } %>
+            <% } %>
+        <form class="item" action="/" method="post">
+            <input type="text" name="newItem" placeholder="What you want to do next ?">
+            <button type="submit" name="addButton" value=<%= title %>>+</button>
+        </form>
+    </div>
+
+<%- include("footer") -%>
