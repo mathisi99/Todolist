@@ -88,6 +88,10 @@ function createNewUser(firstname, lastname, username, password, emailaddress){
         username,
         password,
         emailaddress,
+        "customlist": [{
+            name: home,
+            items: [{ content: "Typing your work then press + sign to add to list" }, { content: "<-- press this button to delete the item when you are done" }, { content: "Enjoy! Thank you for using ❤️❤️❤️"}]
+        }]
     });
     newUser.save()
 }
