@@ -12,7 +12,10 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"))
 
-mongoose.connect("mongodb://localhost:27017/todolistDB")
+const localMongoUrl ="mongodb://localhost:27017/todolistDB"
+const mongoAtlasUrl = "mongodb+srv://admin-ronpie:testing1234@cluster0.j1k2g.mongodb.net/todolistDB" 
+
+mongoose.connect(mongoAtlasUrl);
 
 
 const taskSchema = mongoose.Schema({
@@ -232,4 +235,7 @@ app.get("/about", (req, res) => {
 app.listen(PORT, (req, res) => {
     console.log(`using http://localhost:${PORT}`);
 });
-
+//heroku create
+//git push heroku main || master
+//heroku ps:scale web=1 
+//heroku open
