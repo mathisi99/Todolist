@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
-const { capitalizeFirstLetter } = require("./date");
+const { capitalizeFirstLetter, checkEmptyObject } = require("./date");
 const { stringify } = require("nodemon/lib/utils");
 const PORT = process.env.PORT || 3000;
 const date = require(__dirname + "\\date.js");
@@ -83,10 +83,11 @@ const User = mongoose.model("User", userSchema)
 
 
 async function createNewUser(firstname, lastname, username, password, emailaddress){
-    let user = await User.findOne({username}).exec() 
-    if (Object.keys(user).length > 0){
+    let user = await User.findOne({username}).exec() || new Object()
+    if (!checkEmptyObject(user)){ // Object.keys((new String()).length === 0 true ;    // true
         return
     }
+
     let newUser = new User({
         firstname,
         lastname,
@@ -112,9 +113,9 @@ app.get("/", (req, res) => {
     res.redirect("/home")
 })
 async function newList(name){
-    var listResult = await list.find({name}).exec() // new feature of ES6 
+    var listResult = await list.find({name}).exec()  || new Object()// new feature of ES6 
     // listResult = "" then if (listResult) will be true
-    if (Object.keys(listResult).length === 0) {
+    if (checkEmptyObject(listResult)) {
         const listObj = list({
             name,
             items: []
@@ -139,7 +140,8 @@ function findItemObj(results, name){
 
 app.get("/:id", async (req, res) => {
     if (req.params.id == "favicon.ico") return;
-    const capitalizePath = capitalizeFirstLetter(req.params.id)
+    // this can be replace by using lodash.
+    const capitalizePath = capitalizeFirstLetter(req.params.id) 
     const lowercaseName = String(req.params.id).toLowerCase()
     //check duplicate list
     // Home and home and HOme HOMe HOME are same to home lis    t 

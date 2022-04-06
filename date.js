@@ -23,3 +23,7 @@ module.exports.capitalizeFirstLetter = function(string) {
     var data = String(string).toLowerCase()
     return data.charAt(0).toUpperCase() + data.slice(1);
   }
+
+module.exports.checkEmptyObject = function(obj){
+    return obj && Object.keys(obj).length === 0 && obj.constructor === Object
+}
