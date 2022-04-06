@@ -47,7 +47,7 @@ const listSchema = {
 }
 const list = mongoose.model("List", listSchema)
 
-
+//can do the email, password validation, and adding encryption for password
 const userSchema = mongoose.Schema({
     firstname: {
         type: String,
@@ -81,7 +81,14 @@ const userSchema = mongoose.Schema({
 
 const User = mongoose.model("User", userSchema)
 
-function createNewUser(firstname, lastname, username, password, emailaddress){
+
+async function createNewUser(firstname, lastname, username, password, emailaddress){
+    let user = await User.findOne({username}).exec() 
+    if (Object.keys(user).length > 0){
+        console.log("go here");
+        return
+    }
+    console.log("go here2");
     let newUser = new User({
         firstname,
         lastname,
@@ -89,19 +96,87 @@ function createNewUser(firstname, lastname, username, password, emailaddress){
         password,
         emailaddress,
         "customlist": [{
-            name: home,
+            name: "home",
             items: [{ content: "Typing your work then press + sign to add to list" }, { content: "<-- press this button to delete the item when you are done" }, { content: "Enjoy! Thank you for using ❤️❤️❤️"}]
         }]
     });
     newUser.save()
 }
 
+//comment this after 
+
+
+createNewUser("Ron", "Pieces", "ronpieces", "Roncen@12", "chatzalo1@gmail.com")  
     
-    
-// });
+
+
 app.get("/", (req, res) => {
     res.redirect("/home")
 })
+async function newList(name){
+    var listResult = await list.find({name}).exec() // new feature of ES6 
+    if (listResult) {
+
+    }else{
+        const listObj = list({
+            name,
+            items: []
+        })
+
+        listObj.save()
+        return listObj
+    }
+}
+
+function findItemObj(results, name){
+    var itemObj;    
+    for (let i = 0; i< results.customlist.length; i++){
+        if (results.customlist[i].name == name){
+            itemObj = results.customlist[i]
+            break
+        } 
+    }
+    return itemObj
+}
+
+
+app.get("/:id", (req, res) => {
+    if (req.params.id == "favicon.ico") return;
+    const capitalizePath = capitalizeFirstLetter(req.params.id)
+    //check duplicate list
+    var listObj = newList(req.params.id)
+
+    User.findOne(
+        {'username': "ronpieces"},
+        (err, results) => {
+            
+            // {$push: {'customlist': listObj}},
+            if (err){
+                console.log(err);
+            }else{
+                //find items obj
+                var itemObj = findItemObj(results, req.params.id)
+                
+                if (itemObj == null) {
+                    User.updateOne({username: "ronpieces"}, {$push : {customlist: listObj}}, (err) => {
+                        if (err){
+                            console.log(err);
+                        }else{
+                            console.log("Successfully update");
+                        }
+                    })
+                }else{
+                    res.render("home", {
+                        "pageTitle": `${capitalizePath} List`,
+                        "title" : capitalizePath,
+                        "items": itemObj
+                    })
+                }
+            }
+        })
+    
+})
+
 
 app.post("/", (req, res) => {
     let task = createTaskObj(req.body.newItem)
@@ -141,49 +216,6 @@ app.post("/delete", (req, res) => {
             }
         )
         
-    
-})
-
-app.get("/:id", (req, res) => {
-    if (req.params.id == "favicon.ico") return;
-    const capitalizePath = capitalizeFirstLetter(req.params.id)
-    const listObj = list({
-        name: req.params.id,
-        items: []
-    })
-
-    User.findOne(
-        {'username': "ronpieces"},
-        (err, results) => {
-            var itemObj;
-            // {$push: {'customlist': listObj}},
-            if (err){
-                console.log(err);
-            }else{
-                
-                for (let i = 0; i<results.customlist.length; i++){
-                    if (results.customlist[i].name == req.params.id){
-                        itemObj = results.customlist[i]
-                        break
-                    } 
-                }
-                if (itemObj == null) {
-                    User.updateOne({username: "ronpieces"}, {$push : {customlist: {name: req.params.id, items: []}}}, (err) => {
-                        if (err){
-                            console.log(err);
-                        }else{
-                            console.log("Successfully update");
-                        }
-                    })
-                }else{
-                    res.render("home", {
-                        "pageTitle": `${capitalizePath} List`,
-                        "title" : capitalizePath,
-                        "items": itemObj
-                    })
-                }
-            }
-        })
     
 })
 
