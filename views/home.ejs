@@ -11,7 +11,7 @@
                 
                 <% for (let i = 0; i < items.items.length; i++) { %>
                 <form action="/delete" method="post">
-                    <input name="screenID" value="<%= title%>" type="hidden">
+                    <input name="screenID" value="<%= title %>" type="hidden">
                     <div class="item">
                         <input type="checkbox" name="checkbox" value="<%=items.items[i]._id%>" onChange="this.form.submit()">
                         <p><%= items.items[i].content %></p>

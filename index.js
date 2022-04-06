@@ -113,9 +113,8 @@ app.get("/", (req, res) => {
 })
 async function newList(name){
     var listResult = await list.find({name}).exec() // new feature of ES6 
-    if (listResult) {
-
-    }else{
+    // listResult = "" then if (listResult) will be true
+    if (Object.keys(listResult).length === 0) {
         const listObj = list({
             name,
             items: []
@@ -138,11 +137,13 @@ function findItemObj(results, name){
 }
 
 
-app.get("/:id", (req, res) => {
+app.get("/:id", async (req, res) => {
     if (req.params.id == "favicon.ico") return;
     const capitalizePath = capitalizeFirstLetter(req.params.id)
+    const lowercaseName = String(req.params.id).toLowerCase()
     //check duplicate list
-    var listObj = newList(req.params.id)
+    // Home and home and HOme HOMe HOME are same to home lis    t 
+    var listObj = await newList(lowercaseName)
 
     User.findOne(
         {'username': "ronpieces"},
@@ -153,15 +154,15 @@ app.get("/:id", (req, res) => {
                 console.log(err);
             }else{
                 //find items obj
-                var itemObj = findItemObj(results, req.params.id)
+                var itemObj = findItemObj(results, lowercaseName)
                 //itemObj.items.push(listObj) // this way will much faster than my own way
                 //itemObj.save()
-                if (itemObj == null) {
+                if (itemObj == undefined) {
                     User.updateOne({username: "ronpieces"}, {$push : {customlist: listObj}}, (err) => {
                         if (err){
                             console.log(err);
                         }else{
-                            console.log("Successfully update");
+                            console.log("Successfully add new list for user");
                         }
                     })
                 }else{
@@ -200,7 +201,9 @@ app.post("/", (req, res) => {
 
 
 app.post("/delete", (req, res) => {
-    const url = String(req.rawHeaders[37]).split("/").at(-1);
+    //better to use the req.body.screenID, it will better
+
+    const url = String(req.rawHeaders[37]).split("/").at(-1); 
     // if (req.route.path != "/"){
         User.updateOne(
             {"username": "ronpieces", "customlist.items._id": req.body.checkbox}, //itemsID
