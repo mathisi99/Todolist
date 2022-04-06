@@ -85,10 +85,8 @@ const User = mongoose.model("User", userSchema)
 async function createNewUser(firstname, lastname, username, password, emailaddress){
     let user = await User.findOne({username}).exec() 
     if (Object.keys(user).length > 0){
-        console.log("go here");
         return
     }
-    console.log("go here2");
     let newUser = new User({
         firstname,
         lastname,
@@ -156,7 +154,8 @@ app.get("/:id", (req, res) => {
             }else{
                 //find items obj
                 var itemObj = findItemObj(results, req.params.id)
-                
+                //itemObj.items.push(listObj) // this way will much faster than my own way
+                //itemObj.save()
                 if (itemObj == null) {
                     User.updateOne({username: "ronpieces"}, {$push : {customlist: listObj}}, (err) => {
                         if (err){
