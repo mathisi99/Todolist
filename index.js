@@ -4,6 +4,7 @@ const ejs = require("ejs");
 const mongoose = require("mongoose");
 const { capitalizeFirstLetter, checkEmptyObject } = require("./date");
 const { stringify } = require("nodemon/lib/utils");
+//const date = require(__dirname + "\\date.js"); -> this will cause error when deploy on heroku, should use //date.js
 
 const app = new express();
 app.set("view engine", "ejs");
