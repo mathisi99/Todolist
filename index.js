@@ -233,7 +233,7 @@ app.get("/about", (req, res) => {
 
 
 const PORT = process.env.PORT || 3000;
-
+console.log(PORT);
 app.listen(PORT, (req, res) => {
     console.log(`using http://localhost:${PORT}`);
 });
