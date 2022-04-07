@@ -4,7 +4,6 @@ const ejs = require("ejs");
 const mongoose = require("mongoose");
 const { capitalizeFirstLetter, checkEmptyObject } = require("./date");
 const { stringify } = require("nodemon/lib/utils");
-const date = require(__dirname + "\\date.js");
 
 const app = new express();
 app.set("view engine", "ejs");
