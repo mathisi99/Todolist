@@ -1,3 +1,4 @@
+require("dotenv").config()
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -10,9 +11,8 @@ const app = new express();
 app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"))
-
 const localMongoUrl ="mongodb://localhost:27017/todolistDB"
-const mongoAtlasUrl = "mongodb+srv://admin-ronpie:testing1234@cluster0.j1k2g.mongodb.net/todolistDB" 
+const mongoAtlasUrl = `mongodb+srv://admin-ronpie:${process.env.PASSWORD}@cluster0.j1k2g.mongodb.net/todolistDB`
 
 mongoose.connect(mongoAtlasUrl);
 
@@ -107,7 +107,7 @@ async function createNewUser(firstname, lastname, username, password, emailaddre
 //comment this after 
 
 
-createNewUser("Ron", "Pieces", "ronpieces", "Roncen@12", "chatzalo1@gmail.com")  
+createNewUser("Ron", "Pieces", "ronpieces", `${process.env.RONPIECESPASSWORD}`, "chatzalo1@gmail.com")  
     
 
 

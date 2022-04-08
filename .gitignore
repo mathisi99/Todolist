@@ -1,3 +1,4 @@
 node_modules
 learning.txt
 npm-debug.log
+.env
