@@ -8,6 +8,7 @@ it will going to work list.
 after clone this project 
 "npm install"
 
+Need modify to use: 
 line 14-17: choose localhost or replace your own online mongodb atlas to run  
 
 on line 110: create your own user, username and password
